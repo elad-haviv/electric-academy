@@ -1,35 +1,94 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import classes from "./App.module.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+import {
+    BrowserRouter,
+    createBrowserRouter,
+    RouterProvider,
+} from "react-router-dom";
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <MasterLayout />,
+        children: [
+            {
+                index: true,
+                element: <Home />,
+            },
+        ],
+    },
+    {
+        path: "/auth",
+        element: <AuthLayout />,
+        // TODO: implement authentication
+    },
+    {
+        path: "/dashboard",
+        element: <DashboardLayout />,
+        children: [
+            {
+                index: true,
+                element: <Dashboard />,
+            },
+        ],
+    },
+    {
+        path: "/learn",
+        element: <LearnLayout />,
+        children: [
+            {
+                index: true,
+                element: <Learn />,
+            },
+        ],
+    },
+    {
+        path: "/simulator",
+        element: <Simulator />,
+        children: [
+            {
+                index: true,
+                // TODO: call future simulator loader
+            },
+            {
+                path: "/engineers",
+                // TODO: call future simulator loader
+            },
+        ],
+    },
+    {
+        path: "/questions",
+        children: [
+            {
+                path: "/all",
+                element: <Simulator />,
+                // TODO: call future questions loader
+            },
+            {
+                path: "/engineers",
+                element: <Simulator />,
+                // TODO: call future questions loader
+            },
+            {
+                path: "/non-engineers",
+                element: <Simulator />,
+                // TODO: call future questions loader
+            },
+            {
+                path: "/all",
+                element: <Simulator />,
+                // TODO: call future questions loader
+            },
+            {
+                path: "/subject/:slug",
+                element: <Simulator />,
+                // TODO: call future questions loader
+            },
+        ],
+    },
+]);
+
+export default function App() {
+    return <RouterProvider router={router} />;
 }
-
-export default App
