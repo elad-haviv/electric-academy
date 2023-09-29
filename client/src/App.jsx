@@ -1,11 +1,15 @@
-import { useState } from "react";
-import classes from "./App.module.css";
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import {
-    BrowserRouter,
-    createBrowserRouter,
-    RouterProvider,
-} from "react-router-dom";
+import MasterLayout from "./components/UI/MasterLayout";
+import AuthLayout from "./components/UI/AuthLayout";
+import LearnLayout from "./components/UI/LearnLayout";
+import DashboardLayout from "./components/UI/DashboardLayout";
+
+import Home from "./routes/Home";
+import Learn from "./routes/Learn";
+import Dashboard from "./routes/Dashboard";
+import Simulator from "./components/Simulator/Simulator";
 
 const router = createBrowserRouter([
     {
@@ -52,7 +56,7 @@ const router = createBrowserRouter([
                 // TODO: call future simulator loader
             },
             {
-                path: "/engineers",
+                path: "/simulator/engineers",
                 // TODO: call future simulator loader
             },
         ],
@@ -61,27 +65,22 @@ const router = createBrowserRouter([
         path: "/questions",
         children: [
             {
-                path: "/all",
+                path: "/questions/all",
                 element: <Simulator />,
                 // TODO: call future questions loader
             },
             {
-                path: "/engineers",
+                path: "/questions/engineers",
                 element: <Simulator />,
                 // TODO: call future questions loader
             },
             {
-                path: "/non-engineers",
+                path: "/questions/non-engineers",
                 element: <Simulator />,
                 // TODO: call future questions loader
             },
             {
-                path: "/all",
-                element: <Simulator />,
-                // TODO: call future questions loader
-            },
-            {
-                path: "/subject/:slug",
+                path: "/questions/subject/:slug",
                 element: <Simulator />,
                 // TODO: call future questions loader
             },
