@@ -102,7 +102,11 @@ const router = createBrowserRouter([
     },
 ]);
 
-const authRouter = createBrowserRouter([
+const guestRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <LandingPage />
+    },
     {
         path: "/auth",
         children: [
@@ -125,7 +129,7 @@ export default function App() {
                 <RouterProvider router={router} />
             </SignedIn>
             <SignedOut>
-                <RedirectToSignIn />
+                <RouterProvider router={guestRouter}
             </SignedOut>
         </ClerkProvider>
     );
