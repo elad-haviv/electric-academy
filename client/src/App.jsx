@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, useParams } from "react-router-dom";
 import {
     ClerkProvider,
     SignedIn,
@@ -13,11 +13,16 @@ import MasterLayout from "./components/UI/MasterLayout";
 import AuthLayout from "./components/UI/AuthLayout";
 import LearnLayout from "./components/UI/LearnLayout";
 import DashboardLayout from "./components/UI/DashboardLayout";
+import Simulator from "./components/Simulator/Simulator";
 
 import Home from "./routes/Home";
 import Learn from "./routes/Learn";
 import Dashboard from "./routes/Dashboard";
-import Simulator from "./components/Simulator/Simulator";
+import LandingPage from "./routes/LandingPage";
+import SimulatorMenu from "./components/Simulator/SimulatorMenu";
+import QuestionRepoMenu from "./routes/QuestionRepoMenu";
+
+import QuestionsLoader from "./loaders/QuestionsLoader";
 
 if (!import.meta.env.VITE_REACT_APP_CLERK_PUBLISHABLE_KEY) {
     throw new Error("Missing authentication service key");
@@ -34,69 +39,105 @@ const router = createBrowserRouter([
                 index: true,
                 element: <Home />,
             },
-        ],
-    },
-    {
-        path: "/auth",
-        element: <AuthLayout />,
-        // TODO: implement authentication
-    },
-    {
-        path: "/dashboard",
-        element: <DashboardLayout />,
-        children: [
             {
-                index: true,
-                element: <Dashboard />,
-            },
-        ],
-    },
-    {
-        path: "/learn",
-        element: <LearnLayout />,
-        children: [
-            {
-                index: true,
-                element: <Learn />,
-            },
-        ],
-    },
-    {
-        path: "/simulator",
-        element: <Simulator />,
-        children: [
-            {
-                index: true,
-                // TODO: call future simulator loader
+                path: "/dashboard",
+                element: <DashboardLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <Dashboard />,
+                    },
+                ],
             },
             {
-                path: "/simulator/engineers",
-                // TODO: call future simulator loader
-            },
-        ],
-    },
-    {
-        path: "/questions",
-        children: [
-            {
-                path: "/questions/all",
-                element: <Simulator />,
-                // TODO: call future questions loader
+                path: "/learn",
+                element: <LearnLayout />,
+                children: [
+                    {
+                        index: true,
+                        element: <Learn />,
+                    },
+                ],
             },
             {
-                path: "/questions/engineers",
-                element: <Simulator />,
-                // TODO: call future questions loader
+                path: "/simulator",
+                element: <Outlet />,
+                children: [
+                    {
+                        index: true,
+                        element: <SimulatorMenu />
+                    },
+                    {
+                        path: '/simulator/default',
+                        element: <Simulator />,
+                        loader: QuestionsLoader,
+                    },
+                    {
+                        path: "/simulator/engineers",
+                        element: <Simulator />,
+                        loader: QuestionsLoader,
+                    },
+                ],
             },
             {
-                path: "/questions/non-engineers",
-                element: <Simulator />,
-                // TODO: call future questions loader
-            },
-            {
-                path: "/questions/subject/:slug",
-                element: <Simulator />,
-                // TODO: call future questions loader
+                path: "/questions",
+                element: <Outlet />,
+                children: [
+                    {
+                        index: true,
+                        element: <QuestionRepoMenu />,
+                    },
+                    {
+                        path: "/questions/all",
+                        element: <Simulator />,
+                        loader: QuestionsLoader({
+                            amount: null,
+                            showEngineers: true,
+                            showNonEngineers: true,
+                            shuffle: false,
+                        }),
+                    },
+                    {
+                        path: "/questions/random",
+                        element: <Simulator />,
+                        loader: QuestionsLoader({
+                            amount: 1,
+                            showEngineers: true,
+                            showNonEngineers: true,
+                            shuffle: true,
+                        }),
+                    },
+                    {
+                        path: "/questions/engineers",
+                        element: <Simulator />,
+                        loader: QuestionsLoader({
+                            amount: null,
+                            showNonEngineers: false,
+                            showEngineers: true,
+                            shuffle: false,
+                        }),
+                    },
+                    {
+                        path: "/questions/non-engineers",
+                        element: <Simulator />,
+                        loader: QuestionsLoader({
+                            amount: null,
+                            showNonEngineers: true,
+                            showEngineers: false,
+                            shuffle: false,
+                        }),
+                    },
+                    {
+                        path: "/questions/subject/:subject",
+                        element: <Simulator />,
+                        loader: QuestionsLoader({
+                            amount: null,
+                            showNonEngineers: true,
+                            showEngineers: true,
+                            shuffle: true
+                        }),
+                    },
+                ],
             },
         ],
     },
@@ -105,7 +146,7 @@ const router = createBrowserRouter([
 const guestRouter = createBrowserRouter([
     {
         path: "/",
-        element: <LandingPage />
+        element: <LandingPage />,
     },
     {
         path: "/auth",
@@ -129,7 +170,7 @@ export default function App() {
                 <RouterProvider router={router} />
             </SignedIn>
             <SignedOut>
-                <RouterProvider router={guestRouter}
+                <RouterProvider router={guestRouter} />
             </SignedOut>
         </ClerkProvider>
     );

@@ -1,0 +1,14 @@
+.question-repo-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 1em;
+    padding: 1em 0 1em 1em;
+}
+.question-repo-item {
+    text-align: center;
+    background: var(--color-darker);
+    padding: .5em 2em;
+    border-radius: 1em;
+    font-size: 1.22em;
+}
